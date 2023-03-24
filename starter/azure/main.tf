@@ -33,29 +33,31 @@ resource "azurerm_container_group" "udacity" {
 
 data "azurerm_cosmosdb_account" "udacity" {
   name                = "saksjain-cosmosdb-account"
-  resource_group_name = "jain-cosmosdb-account-rg"
+  resource_group_name = data.azurerm_resource_group.udacity.name
 }
 
 resource "azurerm_cosmosdb_sql_database" "udacity" {
 
   name                = "jain-cosmos-sql-db"
-  resource_group_name = data.azurerm_cosmosdb_account.udacity.resource_group_name
+  resource_group_name = data.azurerm_resource_group.udacity.name
   account_name        = data.azurerm_cosmosdb_account.udacity.name
   throughput          = 400
+  administrator_login          = "student_10f0d9bbleu93ob7_001544326@vocareumvocareum.onmicrosoft.com"
+  administrator_login_password = "1OUlnuYNDAEhsA8MgIjBP?TuauahvTONfoPMJ#rEQ5F0wqx"
 
 }
 
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_resource_group" "udacity" {
-  name     = "udacity-resources"
+  name     = data.azurerm_resource_group.udacity.name
   location = "West Europe"
 }
 
 resource "azurerm_bot_web_app" "udacity" {
   name                = "udacity"
   location            = "global"
-  resource_group_name = azurerm_resource_group.udacity.name
+  resource_group_name = data.azurerm_resource_group.udacity.name
   sku                 = "F0"
   microsoft_app_id    = data.azurerm_client_config.current.client_id
 }
