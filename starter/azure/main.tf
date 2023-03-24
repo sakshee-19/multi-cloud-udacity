@@ -42,10 +42,20 @@ resource "azurerm_mssql_server" "udacity" {
 
 data "azurerm_client_config" "current" {}
 
-resource "azurerm_bot_web_app" "udacity" {
-  name                = "udacity"
-  location            = "global"
+# Dotnet web app
+resource "azurerm_service_plan" "example" {
+  name                = "example"
   resource_group_name = data.azurerm_resource_group.udacity.name
-  sku                 = "F0"
-  microsoft_app_id    = data.azurerm_client_config.current.client_id
+  location            = data.azurerm_resource_group.udacity.location
+  os_type             = "Linux"
+  sku_name            = "P1v2"
+}
+
+resource "azurerm_linux_web_app" "example" {
+  name                = "example"
+  resource_group_name = data.azurerm_resource_group.udacity.name
+  location            = data.azurerm_resource_group.udacity.location
+  service_plan_id     = azurerm_service_plan.example.id
+
+  site_config {}
 }
