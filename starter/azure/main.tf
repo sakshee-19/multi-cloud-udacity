@@ -12,7 +12,7 @@ resource "azurerm_container_group" "udacity" {
 
   container {
     name   = "azure-container-app"
-    image  = "docker.io/sakshee5/azure_app:1.0"
+    image  = "docker.io/tscotto5/azure_app:1.0"
     cpu    = "0.5"
     memory = "1.5"
     environment_variables = {
@@ -31,8 +31,8 @@ resource "azurerm_container_group" "udacity" {
 
 ####### Your Additions Will Start Here ######
 
-resource "azurerm_mssql_server" "example" {
-  name                         = "example-sqlserver"
+resource "azurerm_mssql_server" "udacity" {
+  name                         = "saksjain-sqlserver"
   resource_group_name          = data.azurerm_resource_group.udacity.name
   location                     = data.azurerm_resource_group.udacity.location
   version                      = "12.0"
@@ -41,11 +41,6 @@ resource "azurerm_mssql_server" "example" {
 }
 
 data "azurerm_client_config" "current" {}
-
-resource "azurerm_resource_group" "udacity" {
-  name     = data.azurerm_resource_group.udacity.name
-  location = "West Europe"
-}
 
 resource "azurerm_bot_web_app" "udacity" {
   name                = "udacity"
