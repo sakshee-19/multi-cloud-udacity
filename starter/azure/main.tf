@@ -32,7 +32,7 @@ resource "azurerm_container_group" "udacity" {
 ####### Your Additions Will Start Here ######
 
 data "azurerm_cosmosdb_account" "udacity" {
-  name                = "saksjainstorageudacity"
+  name                = "udacitysaks"
   resource_group_name = data.azurerm_resource_group.udacity.name
 }
 
