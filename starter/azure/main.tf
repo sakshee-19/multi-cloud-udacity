@@ -52,7 +52,7 @@ resource "azurerm_service_plan" "example" {
 }
 
 resource "azurerm_linux_web_app" "example" {
-  name                = "example"
+  name                = "saksjainwebapp"
   resource_group_name = data.azurerm_resource_group.udacity.name
   location            = data.azurerm_resource_group.udacity.location
   service_plan_id     = azurerm_service_plan.example.id
