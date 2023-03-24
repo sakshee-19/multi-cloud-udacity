@@ -1,5 +1,5 @@
 data "azurerm_resource_group" "udacity" {
-  name     = "Regroup_4gKqrgD_cn"
+  name     = "Regroup_1iVpmoBEoV39VmCVmM6VJ"
 }
 
 resource "azurerm_container_group" "udacity" {
@@ -7,17 +7,17 @@ resource "azurerm_container_group" "udacity" {
   location            = data.azurerm_resource_group.udacity.location
   resource_group_name = data.azurerm_resource_group.udacity.name
   ip_address_type     = "Public"
-  dns_name_label      = "udacity-tscotto-azure"
+  dns_name_label      = "udacity-sakshee-azure"
   os_type             = "Linux"
 
   container {
     name   = "azure-container-app"
-    image  = "docker.io/tscotto5/azure_app:1.0"
+    image  = "docker.io/sakshee5/azure_app:1.0"
     cpu    = "0.5"
     memory = "1.5"
     environment_variables = {
-      "AWS_S3_BUCKET"       = "udacity-tscotto-aws-s3-bucket",
-      "AWS_DYNAMO_INSTANCE" = "udacity-tscotto-aws-dynamodb"
+      "AWS_S3_BUCKET"       = "my-sakshee-bucket",
+      "AWS_DYNAMO_INSTANCE" = "GameScores"
     }
     ports {
       port     = 3000
@@ -30,3 +30,32 @@ resource "azurerm_container_group" "udacity" {
 }
 
 ####### Your Additions Will Start Here ######
+
+data "azurerm_cosmosdb_account" "udacity" {
+  name                = "saksjain-cosmosdb-account"
+  resource_group_name = "jain-cosmosdb-account-rg"
+}
+
+resource "azurerm_cosmosdb_sql_database" "udacity" {
+
+  name                = "jain-cosmos-sql-db"
+  resource_group_name = data.azurerm_cosmosdb_account.udacity.resource_group_name
+  account_name        = data.azurerm_cosmosdb_account.udacity.name
+  throughput          = 400
+
+}
+
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_resource_group" "udacity" {
+  name     = "udacity-resources"
+  location = "West Europe"
+}
+
+resource "azurerm_bot_web_app" "udacity" {
+  name                = "udacity"
+  location            = "global"
+  resource_group_name = azurerm_resource_group.udacity.name
+  sku                 = "F0"
+  microsoft_app_id    = data.azurerm_client_config.current.client_id
+}

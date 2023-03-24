@@ -171,7 +171,7 @@ resource "aws_ecs_task_definition" "udacity_app" {
   container_definitions = <<DEFINITION
 [
   {
-    "image": "docker.io/tscotto5/aws_app:1.0",
+    "image": "docker.io/sakshee5/aws_app:1.0",
     "cpu": 1024,
     "memory": 2048,
     "name": "udacity-app",
@@ -179,11 +179,11 @@ resource "aws_ecs_task_definition" "udacity_app" {
     "environment": [
       {
         "name": "AZURE_SQL_SERVER",
-        "value": "udacity-tscotto-azure-sql"
+        "value": "udacity-sakshee-azure-sql"
       },
       {
         "name": "AZURE_DOTNET_APP",
-        "value": "udacity-tscotto-azure-dotnet-app"
+        "value": "udacity-sakshee-azure-dotnet-app"
       }
     ],
     "portMappings": [
@@ -203,4 +203,51 @@ variable "app_count" {
 }
 
 ####### Your Additions Will Start Here ######
+resource "aws_s3_bucket" "udacity" {
+  bucket = "my-sakshee-bucket"
+}
 
+# Dynamo table
+resource "aws_dynamodb_table" "basic-dynamodb-table" {
+  name           = "GameScores"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 20
+  write_capacity = 20
+  hash_key       = "UserId"
+  range_key      = "GameTitle"
+
+  attribute {
+    name = "UserId"
+    type = "S"
+  }
+
+  attribute {
+    name = "GameTitle"
+    type = "S"
+  }
+
+  attribute {
+    name = "TopScore"
+    type = "N"
+  }
+
+  ttl {
+    attribute_name = "TimeToExist"
+    enabled        = false
+  }
+
+  global_secondary_index {
+    name               = "GameTitleIndex"
+    hash_key           = "GameTitle"
+    range_key          = "TopScore"
+    write_capacity     = 10
+    read_capacity      = 10
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["UserId"]
+  }
+
+  tags = {
+    Name        = "dynamodb-table-1"
+    Environment = "production"
+  }
+}
